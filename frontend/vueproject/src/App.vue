@@ -1,61 +1,54 @@
 <template>
-  <div class='container'>
-    <tests v-if='testing'></tests>
-
-    <div class='row'>
-      <div class='col'>
-        <nav-bar
-          :tests-open='testing'
-          @toggle-tests='toggleTests'>
-        </nav-bar>
-      </div>
-    </div>
-    <div class='row mt-2'>
-      <div class='col'>
-        <complaint-form ref='complaintForm'></complaint-form>
-      </div>
-    </div>  
+  <div id="app">
+    <WelcomePage v-if="currentPage === 'welcome'" @language-selected="setLanguage" />
+    <ConfigurationForm v-else-if="currentPage === 'config'" @config-completed="startPrologue" />
+    <ProloguePage v-else-if="currentPage === 'prologue'" @start-story="startStory" />
+    <!-- Add other pages as needed -->
   </div>
 </template>
 
 <script>
-// import NavBar from './components/NavBar.vue';
-// import ComplaintForm from './components/ComplaintForm.vue';
-// import Tests from './components/Tests.vue';
+import WelcomePage from './components/WelcomePage.vue';
+import ConfigurationForm from './components/ConfigurationForm.vue';
+import ProloguePage from './components/ProloguePage.vue';
 
 export default {
   name: 'App',
   components: {
-    ComplaintForm,
-    NavBar,
-    Tests
+    WelcomePage,
+    ConfigurationForm,
+    ProloguePage
   },
   data() {
     return {
-      testing: false,
-    }
+      currentPage: 'welcome',
+      language: 'English',
+      userConfig: {}
+    };
   },
   methods: {
-    toggleTests() {
-      this.testing = !this.testing;
+    setLanguage(lang) {
+      this.language = lang;
+      this.currentPage = 'config';
+    },
+    startPrologue(config) {
+      this.userConfig = config;
+      this.currentPage = 'prologue';
+    },
+    startStory() {
+      // Logic to start the story
     }
-  }  
-}
+  }
+};
 </script>
 
 <style>
 body { 
-  background: url('assets/bg.jpg') no-repeat center center fixed; 
+  background: url('assets/BACKGROUND.png') no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-}
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscnale;
 }
 
 @import'~bootstrap/dist/css/bootstrap.css'
