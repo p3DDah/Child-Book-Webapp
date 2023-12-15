@@ -4,50 +4,64 @@
     <div class="custom-container text-center">
       <img src="@/assets/book1.png" alt="Hintergrund" class="background-image">
     </div>
-    <img src="@/assets/Prolog.png" alt="Overlay" class="overlay-image">
 
-
-
-
-
+  
     <!-- Buttons container (top right) -->
     <div class="buttons-container">
 
-      <!-- See whole text button -->
-      <button class="text-button" @click="showTextConfirmation">
-        <div class="see-button">See whole text</div>
-      </button>
+        <!-- CHOICE buttons -->
+        <button class="choice-1" @click="showTextConfirmation">
+          <div class="see-button"> A: {{ choice1 }} </div>
+        </button>
 
-      <!-- Sound button -->
-      <button class="square-button" @click="toggleSound">
-        {{ soundButtonText }}
-      </button>
+        <button class="choice-2" @click="showTextConfirmation">
+          <div class="see-button">B: {{ choice2 }} </div>
+        </button>
 
-      <!-- Exit button -->
-      <button class="round-button" @click="showExitConfirmation">
-        <div class="x-symbol">X</div>
-      </button>
+        <button class="choice-3" @click="showTextConfirmation">
+          <div class="see-button">C:{{ choice3 }} </div>
+        </button>
 
-      <!-- Continue button -->
-      <button class="text-continue" @click="showContinueConfirmation">Continue</button>
+        <button class="choice-4" @click="showTextConfirmation">
+          <div class="see-button">D:{{ choice3 }} </div>
+        </button>
+   
+        <!-- Sound button -->
+        <button class="square-button" @click="toggleSound">
+          {{ soundButtonText }}
+        </button>
 
-</div>
+        <!-- Exit button -->
+        <button class="round-button" @click="showExitConfirmation">
+          <div class="x-symbol">X</div>
+        </button>
 
-  
-
-
-    <!-- Confirmation dialog for continuing -->
-    <div v-if="showContinueDialog" class="modal">
-        <div class="modal-content">
-          <h2>Do you really want to continue?</h2>
-          <button type="submit" id="Yes" @click="startStory">Yes</button>
-          <button id="No" @click="cancelContinue">No</button>
-        </div>
+        <!-- Back button -->
+        <button class="text-back" @click="showBackConfirmation">Go back</button>
     </div>
 
-    <div class="prologue-box">
-        <h2 id="title-page"> {{ prologueTitle }}</h2>
-        <p id="prologue-text">{{ truncatedPrologueText }}</p>
+
+
+      <div v-if="showLoadingModal" class="modal">
+      <div class="modal-content">
+        <h2>Loading...</h2>
+        <!-- You can add a spinner or any loading animation here -->
+      </div>
+    </div>
+
+
+    <!-- Confirmation dialog for going back -->
+    <div v-if="showBackDialog" class="modal">
+        <div class="modal-content">
+          <h2>Do you really want to go back?</h2>
+          <button type="submit" id="Yes" @click="goBacktoLastPage">Yes</button>
+          <button id="No" @click="cancelBack">No</button>
+        </div>
+      </div>
+
+    <div class="chapter-box">
+        <h2 id="title-page"> {{ chapterTitle }}</h2>
+        <p id="chapter-text">{{ truncatedChapterText }}</p>
       </div>
 
 
@@ -75,25 +89,26 @@
 
 
 
-     <!-- Text box Prolog -->
+     <!-- Text box Chapter -->
      <div v-if="showWholeText" class="modal">
       <div class="modal-content">
-        <h2><div class="text-box">
-          <h2 id="title"> {{ prologueTitle }}</h2>
-          <p>{{ prologueText }}</p>
-          </div></h2>
-        <button class="close" @click="closeText">Close</button>
+        <h2>Are you sure about this choice?</h2>
+        <p>You have selected: {{ }}</p>
+        <button class="open" @click="confirmChoice">Yes</button>
+        <button class="close" @click="closeText">No</button>
       </div>
     </div>
 
-  </div>
+
+</div>
+
+
+
 </template>
-
-
 
 <script>
 export default {
-  name: 'ProloguePage',
+  name: 'ChapterPage',
   props: {
   userConfig: Object
   },
@@ -104,44 +119,42 @@ export default {
       soundSettingsModalOpen: false,
       showConfirmationDialog: false,
       showWholeText: false,
-      showContinueDialog: false,
+      showBackDialog: false, // Initialisieren Sie die Variable hier
+      showLoadingModal: false,
     };
   },
   computed: {
     soundButtonText() {
       return this.soundButtonActive ? 'Sound on' : 'Sound off';
     },
-    prologueText() {
-    // Replace placeholders in the prologue text with userConfig data
-    return `
-      In a realm where ancient mystique and modern marvels intertwine, an epic saga awaits to be told. Here, in the heart of Korea's enchanted lands, a world brimming with magic and mystery beckons. A world where dragons trace majestic arcs across the sky and mythical beings whisper the secrets of the ages.
-
-      In this realm of wonder, two heroes are predestined to unite: [MAIN_NAME], the resplendent phoenix from the soaring cliffs of Pohang, a creature of fire and lore, and Nubzuki, the inquisitive platfish from the tranquil waters of Daejeon, wise and whimsical.
-
-      Their journey, a tapestry of peril and enlightenment, will sweep them through realms where ancient trees murmur forgotten tales, across vast meadows echoing with celestial music, and into vibrant cities where history and future meld in perfect harmony.
-
-      This odyssey, however, is far from a mere escapade; it's a quest of discovery, resilience, and kinship. Through trials and tribulations, [MAIN_NAME] and Nubzuki will delve deep into the heart of Korean culture, encountering its rich traditions, arts, and ancient wisdoms, each step a lesson in unity and strength.
-
-      But lurking in the shadows is a darkness, a force that seeks to unbalance this world of wonder. Our heroes, [MAIN_NAME] and Nubzuki, must stand as one against this burgeoning chaos. In their quest, they will learn that true might blossoms from togetherness and that courage can be found in the most unexpected places.
-
-      So, brace yourselves, dear readers, for an adventure beyond compare. Soar with [MAIN_NAME] into realms uncharted, dive with Nubzuki into the depths of the extraordinary. Together, we will traverse a world where Korean lore comes alive, where each twist and turn is a doorway to the extraordinary.
-
-      Prepare to embark on "The Quest for Harmony in Korea's Enchanted Realms," a narrative pulsating with magic, brimming with lessons, and shimmering with the light of enduring hope.`;
+    chapterText() {
+      return `hello`
     },
-    prologueTitle() {
-      return `The Quest for Harmony in Korea's Enchanted Realms`
+    chapterTitle() {
+      return `hello`
     },
-    truncatedPrologueText() {
-      // Legen Sie die maximale Anzahl von Wörtern fest, die angezeigt werden sollen
+    truncatedChapterText() {
       const maxWords = 150;
 
       // Teilen Sie den Text in Wörter auf
-      const words = this.prologueText.split(/\s+/);
+      const words = this.chapterText.split(/\s+/);
 
       // Begrenzen Sie die Anzahl der Wörter und fügen Sie "..." hinzu, wenn der Text abgeschnitten wurde
       const truncatedWords = words.length > maxWords ? words.slice(0, maxWords).join(' ') + '...' : words.join(' ');
 
       return truncatedWords;
+    },
+    choice1() {
+      return ``
+    },
+    choice2() {
+      return ``
+    },
+    choice3() {
+      return ``
+    },
+    choice4() {
+      return ``
     },
   },
   methods: {
@@ -170,27 +183,36 @@ export default {
     toggleOption(option) {
       this.selectedOption = option;
     },
-    showContinueConfirmation() {
-      this.showContinueDialog = true;
+    showBackConfirmation () {
+      this.showBackDialog = true; 
     },
-    startStory() {
-      // Navigate to the next page (ChapterPage.vue)
-      this.$emit('start-story');
-    },
-    cancelContinue() {
+    cancelBack() {
       // Close the confirmation dialog
-      this.showContinueDialog = false;
+      this.showBackDialog = false;
+    },
+    goBacktoLastPage() {
+      // Navigate to the next page (ChapterPage.vue)
+      this.$emit('start-prologue');;
+    },
+    confirmChoice() {
+      this.showWholeText = false;
+      this.showLoadingModal = true;
+      setTimeout(() => {
+        this.showLoadingModal = false;
+        // Redirect to the next page, you might need to pass the selected choice or handle it accordingly
+        ; // Replace 'NextPage' with the actual route name
+        this.$emit('start-prologue')}, 30000); // 30 seconds delay
     },
   },
-};
-</script>
+}
 
+</script>
 
 
 <style scoped>
 
 
-.prologue-box {
+.chapter-box {
   position: absolute; /* Absolute Positionierung relativ zum nächsten positionierten Elternelement */
   top: 140px; /* Anpassen der vertikalen Position des überlagernden Bildes */
   left: 340px; /* Anpassen der horizontalen Position des überlagernden Bildes */
@@ -198,7 +220,7 @@ export default {
   height: auto; /* Automatische Anpassung der Höhe basierend auf der Breite */
   z-index: 1; 
 }
-#prologue-title {
+#chapter-title {
   margin-top: 10px;
 }
 .overlay-image {
@@ -269,16 +291,14 @@ background-color: grey; /* Change color on hover */
   font-weight: bold;
 }
 
-.text-button {
+.choice-1 {
   position: absolute;
-  right: 1020px; /* Add spacing between buttons */
-  top: 650px;
-  width: 120px;
+  right: 880px; /* Add spacing between buttons */
+  top: 460px;
+  width: 420px;
   height: 50px;
-  background-color: rgb(241, 212, 63);
   border: none;
   border-radius: 5px;
-  color: darkslategray;
   text-align: center;
   text-decoration: none;
   display: flex;
@@ -286,13 +306,85 @@ background-color: grey; /* Change color on hover */
   justify-content: center;
   cursor: pointer;
   z-index: 3;
+  background-color: rgb(194, 192, 192);
+  color: darkslategray;
+}
+
+.choice-1:hover {
+  background-color: limegreen;
+}
+.choice-2 {
+  position: absolute;
+  right: 880px; /* Add spacing between buttons */
+  top: 540px;
+  width: 420px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  background-color: rgb(194, 192, 192);
+  color: darkslategray;
+}
+
+.choice-2:hover {
+  background-color: limegreen;
+}
+.choice-3 {
+  position: absolute;
+  right: 880px; /* Add spacing between buttons */
+  top: 620px;
+  width: 420px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  background-color:rgb(194, 192, 192);
+  color: darkslategray;
+}
+
+.choice-3:hover {
+  background-color: limegreen;
+}
+.choice-4 {
+  position: absolute;
+  right: 880px; /* Add spacing between buttons */
+  top: 700px;
+  width: 420px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  background-color: rgb(194, 192, 192);
+  color: darkslategray;
+}
+
+.choice-4:hover {
+  background-color: limegreen;
 }
 
 .text-button:hover {
   background-color: rgb(255, 196, 0);
 }
 
-.text-continue {
+.text-back {
   position: absolute;
   right: 450px; /* Add spacing between buttons */
   top: 650px;
@@ -311,7 +403,7 @@ background-color: grey; /* Change color on hover */
   z-index: 2;
 }
 
-.text-continue:hover {
+.text-back:hover {
     background-color: darkgreen;
   }
 
@@ -424,6 +516,28 @@ background-color: grey; /* Change color on hover */
   cursor: pointer;
 }
 
+.open {
+  color: black;
+  float: left;
+  align-items: right;
+  font-size: 28px;
+  font-weight: bold;
+  transition: color 0.3s; /* Add a smooth color transition */
+  width: 120px;
+  height: 50px;
+  background-color: turquoise;
+  border: none;
+  border-radius: 5px;
+}
+
+.open:hover,
+.open:focus {
+  background-color: blue;
+  color: #333; /* Change color on hover/focus */
+  text-decoration: none;
+  cursor: pointer;
+}
+
 /* Optional: Add more styles for the text as needed */
 .text-box p {
 font-size: 16px;
@@ -436,5 +550,5 @@ line-height: 2.0;
 padding: 55px;
 }
 
-</style>
 
+</style>

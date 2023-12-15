@@ -30,6 +30,18 @@
             <label for="color">Favorite Color:</label>
             <input type="color" class="form-control" id="color" v-model="config.favoriteColor" required>
           </div>
+
+          <!-- Favorite Animal input field -->
+          <div class="form-group col-6 mx-auto">
+            <label for="animal">Favorite Animal:</label>
+            <input type="text" class="form-control" id="animal" v-model="config.favoriteAnimal" @input="validateAnimal" placeholder="Enter your favourite animal" required>
+            <span class="error-message" v-if="errors.favoriteAnimal">{{ errors.favoriteAnimal }}</span>
+          </div>
+
+          <div class="form-group col-6 mx-auto">
+            <label for="nameAnimal">Choose a name for your animal:</label>
+            <input type="text" class="form-control" id="nameAnimal" v-model="config.nameAnimal" placeholder="Enter a name for your animal" required pattern="[A-Za-z ]+">
+          </div>
   
           <div class="form-group col-6 mx-auto">
             <label for="season">Season:</label>
@@ -70,26 +82,47 @@
           gender: '',
           country: '',
           favoriteColor: '',
+          favoriteAnimal: '',
+          nameAnimal: '',
           season: '',
           numChapters: null,
           numChoices: null,
         },
+        errors: {
+          numChapters: '',
+          numChoices: '',
+          favoriteAnimal: '',
+    },
       };
     },
     methods: {
+
+      validateNumericInput(field, min, max) {
+        const value = this.config[field];
+        if (value < min || value > max) {
+          this.errors[field] = `Number of ${field} must be between ${min} and ${max}.`;
+        } else {
+          this.errors[field] = '';
+        }
+      },
+      validateAnimal() {
+        const regex = /^[A-Za-z ]+$/;
+        if (!regex.test(this.config.favoriteAnimal)) {
+          this.errors.favoriteAnimal = 'Favorite animal must only contain letters.';
+        } else {
+          this.errors.favoriteAnimal = '';
+        }
+      },
       submitForm() {
-        // Basic validation, you can add custom validation logic here
-        if (this.config.numChapters < 3 || this.config.numChapters > 15) {
-          alert('Number of chapters must be between 3 and 15.');
-          return;
+        // Call validation methods before submitting
+        this.validateNumericInput('numChapters', 3, 15);
+        this.validateNumericInput('numChoices', 2, 5);
+        this.validateAnimal();
+
+        // Check if there are any errors before emitting the event
+        if (!this.errors.numChapters && !this.errors.numChoices && !this.errors.favoriteAnimal) {
+          this.$emit('config-completed', this.config);
         }
-  
-        if (this.config.numChoices < 2 || this.config.numChoices > 5) {
-          alert('Number of choices must be between 2 and 5.');
-          return;
-        }
-  
-        this.$emit('config-completed', this.config);
       },
     },
   };
@@ -103,6 +136,7 @@
     padding: 40px; /* Padding for inside the box */
     margin: auto; /* Center the box horizontally */
     max-width: 800px; /* Set a maximum width for the box */
+    max-height: 890px;
   }
   
   #startbutton {

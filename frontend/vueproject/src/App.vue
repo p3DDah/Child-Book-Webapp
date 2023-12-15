@@ -3,6 +3,8 @@
     <WelcomePage v-if="currentPage === 'welcome'" @language-selected="setLanguage" />
     <ConfigurationForm v-else-if="currentPage === 'config'" @config-completed="startPrologue" />
     <ProloguePage v-else-if="currentPage === 'prologue'" @start-story="startStory" />
+    <ChapterPage v-else-if="currentPage === 'chapter'" @start-next-chapter="startNextChapter" />
+
     <!-- Add other pages as needed -->
   </div>
 </template>
@@ -11,13 +13,15 @@
 import WelcomePage from './components/WelcomePage.vue';
 import ConfigurationForm from './components/ConfigurationForm.vue';
 import ProloguePage from './components/ProloguePage.vue';
+import ChapterPage from './components/ChapterPage.vue';
 
 export default {
   name: 'App',
   components: {
     WelcomePage,
     ConfigurationForm,
-    ProloguePage
+    ProloguePage,
+    ChapterPage,
   },
   data() {
     return {
@@ -37,9 +41,14 @@ export default {
     },
     startStory() {
       // Logic to start the story
+      this.currentPage = 'chapter';
+    },
+    startNextChapter(){
+      this.currentPage = 'chapter'; 
     }
   }
 };
+
 </script>
 
 <style>

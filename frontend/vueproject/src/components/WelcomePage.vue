@@ -16,7 +16,23 @@
     data() {
       return {
         selectedLanguage: 'English',
-        languages: ['English', 'Spanish', 'French', /* other languages */]
+        languages:  ['Afrikaans', 'Albanian', 'Amharic', 'Arabic', 'Armenian', 'Azerbaijani',
+        'Basque', 'Belarusian', 'Bengali', 'Bosnian', 'Bulgarian', 'Catalan',
+        'Cebuano', 'Chinese', 'Corsican', 'Croatian', 'Czech', 'Danish',
+        'Dutch', 'English', 'Esperanto', 'Estonian', 'Finnish', 'French',
+        'Frisian', 'Galician', 'Georgian', 'German', 'Greek', 'Gujarati',
+        'Haitian Creole', 'Hausa', 'Hawaiian', 'Hebrew', 'Hindi', 'Hmong',
+        'Hungarian', 'Icelandic', 'Igbo', 'Indonesian', 'Irish', 'Italian',
+        'Japanese', 'Javanese', 'Kannada', 'Kazakh', 'Khmer', 'Kinyarwanda',
+        'Korean', 'Kurdish', 'Kyrgyz', 'Lao', 'Latvian', 'Lithuanian',
+        'Luxembourgish', 'Macedonian', 'Malagasy', 'Malay', 'Malayalam',
+        'Maltese', 'Maori', 'Marathi', 'Mongolian', 'Myanmar [Burma]', 'Nepali',
+        'Norwegian', 'Pashto', 'Persian', 'Polish', 'Portuguese', 'Punjabi',
+        'Romanian', 'Russian', 'Samoan', 'Scots Gaelic', 'Serbian', 'Shona',
+        'Sindhi', 'Sinhala', 'Slovak', 'Slovenian', 'Somali', 'Spanish',
+        'Sundanese', 'Swahili', 'Swedish', 'Tajik', 'Tamil', 'Tatar', 'Telugu',
+        'Thai', 'Turkish', 'Turkmen', 'Ukrainian', 'Urdu', 'Uzbek', 'Vietnamese',
+        'Welsh', 'Xhosa', 'Yiddish', 'Yoruba', 'Zulu']
       };
     },
     methods: {
